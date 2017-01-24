@@ -44,13 +44,15 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	var _game = __webpack_require__(1);
 	
 	var _game2 = _interopRequireDefault(_game);
+	
+	var _vars = __webpack_require__(4);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -62,24 +64,25 @@
 	
 	    var canvasEl = document.getElementById("canvas");
 	    this.ctx = canvasEl.getContext("2d");
-	    this.game = new _game2.default(this.ctx);
-	    this.stage = this.game.stage;
-	    this.player = this.game.player;
+	    this.timer = 0;
 	    this.keyLeft = false;
 	    this.keyRight = false;
-	    this.timer = 0;
-	    this.pause = false;
+	    this.topScore = 0;
+	    this.currentScore = 0;
+	
+	    this.handleInput();
 	  }
 	
 	  _createClass(View, [{
-	    key: "start",
+	    key: 'start',
 	    value: function start() {
+	      this.game = new _game2.default(this.ctx);
+	      this.player = this.game.player;
 	      this.handleInput();
-	      // setInterval(this.frame.bind(this), 1000/60);
 	      requestAnimationFrame(this.frame.bind(this));
 	    }
 	  }, {
-	    key: "handleInput",
+	    key: 'handleInput',
 	    value: function handleInput() {
 	      var _this = this;
 	
@@ -92,18 +95,23 @@
 	      });
 	
 	      document.addEventListener("keypress", function (e) {
-	        console.log(e);
+	        e.preventDefault();
 	        if (e.code === "Space") {
-	          console.log(_this.pause);
-	          _this.pause = !_this.pause;
-	          if (!_this.pause) {
-	            requestAnimationFrame(_this.frame.bind(_this));
-	          }
+	          _this.handleSpace();
 	        }
 	      });
 	    }
 	  }, {
-	    key: "handleKeyDown",
+	    key: 'handleSpace',
+	    value: function handleSpace() {
+	      if (this.game === undefined || this.game.gameOver) {
+	        this.game = new _game2.default(this.ctx);
+	        this.player = this.game.player;
+	        this.start();
+	      }
+	    }
+	  }, {
+	    key: 'handleKeyDown',
 	    value: function handleKeyDown(e) {
 	      if (e.key === "ArrowRight") {
 	        this.keyRight = true;
@@ -112,7 +120,7 @@
 	      }
 	    }
 	  }, {
-	    key: "handleKeyUp",
+	    key: 'handleKeyUp',
 	    value: function handleKeyUp(e) {
 	      if (e.key === "ArrowRight") {
 	        this.keyRight = false;
@@ -121,7 +129,7 @@
 	      }
 	    }
 	  }, {
-	    key: "frame",
+	    key: 'frame',
 	    value: function frame() {
 	      if (this.keyLeft) {
 	        this.player.handleMove(-9);
@@ -129,11 +137,17 @@
 	        this.player.handleMove(9);
 	      }
 	      this.timer += 1;
-	      if (this.timer % 45 === 0) {
+	      if (this.timer % _vars.GENERATE_SHAPE_FRAME === 0) {
 	        this.game.generateShape();
 	      }
 	      this.game.tick();
-	      if (!this.game.gameOver && !this.pause) {
+	      if (this.game.gameOver) {
+	        this.currentScore = this.game.count;
+	        if (this.currentScore > this.topScore) {
+	          this.topScore = this.currentScore;
+	        }
+	        console.log(this.currentScore, this.topScore);
+	      } else {
 	        requestAnimationFrame(this.frame.bind(this));
 	      }
 	    }
@@ -143,7 +157,6 @@
 	}();
 	
 	var view = new View();
-	view.start();
 
 /***/ },
 /* 1 */
@@ -197,12 +210,12 @@
 	        if (_this.player.radius - _vars.BALL_RADIUS <= shape.radius && _this.player.radius + _vars.BALL_RADIUS >= shape.radius) {
 	          var end = shape.startAngle + shape.arcLength;
 	          var start = shape.startAngle;
-	          if (end >= 360) {
+	          if (start >= 360 || end >= 360) {
 	            end -= 360;
 	            start -= 360;
 	          }
-	          console.log(start, end, _this.player.angle);
-	          if (_this.player.angle > start && _this.player.angle < end) {
+	          if (_this.player.angle > start && _this.player.angle < end || _this.player.angle - 360 > start && _this.player.angle - 360 < end || _this.player.angle + 360 > start && _this.playerangle + 360 < end) {
+	            console.log("collision!");
 	            _this.gameOver = true;
 	          }
 	        }
@@ -240,11 +253,11 @@
 	      this.draw();
 	      this.handleCollision();
 	      this.remove();
-	      // if (this.player.clockwise) {
-	      //   this.player.handleMove(1);
-	      // } else {
-	      //   this.player.handleMove(-1);
-	      // }
+	      if (this.player.clockwise) {
+	        this.player.handleMove(1);
+	      } else {
+	        this.player.handleMove(-1);
+	      }
 	    }
 	  }]);
 	
@@ -311,7 +324,7 @@
 	
 	      ctx.beginPath();
 	      ctx.arc(_vars.CANVAS_WIDTH / 2, _vars.CANVAS_HEIGHT / 2, _vars.CENTER_RADIUS, 0, 2 * Math.PI);
-	      ctx.fillStyle = 'black';
+	      ctx.fillStyle = 'white';
 	      ctx.fill();
 	    }
 	  }]);
@@ -344,9 +357,8 @@
 	    this.radius = _vars.SHAPE_STARTING_RADIUS;
 	    this.startAngle = this.handleMove(Math.random() * 360);
 	    this.arcLength = 180;
-	    // this.clockwise = Math.random() > 0.5 ? true : false;
-	    this.clockwise = true;
-	    this.color = 'black';
+	    this.clockwise = Math.random() > 0.5 ? true : false;
+	    this.color = 'white';
 	  }
 	
 	  _createClass(Shape, [{
@@ -409,7 +421,10 @@
 	//shape
 	var SHAPE_ANGLE_CHANGE = exports.SHAPE_ANGLE_CHANGE = 3;
 	var SHAPE_STARTING_RADIUS = exports.SHAPE_STARTING_RADIUS = 300;
-	var SHAPE_SHRINK_RATE = exports.SHAPE_SHRINK_RATE = 2;
+	var SHAPE_SHRINK_RATE = exports.SHAPE_SHRINK_RATE = 3;
+	
+	//view
+	var GENERATE_SHAPE_FRAME = exports.GENERATE_SHAPE_FRAME = 30;
 
 /***/ }
 /******/ ]);
