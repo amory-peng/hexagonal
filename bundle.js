@@ -417,8 +417,8 @@
 	  value: true
 	});
 	//canvas
-	var CANVAS_HEIGHT = exports.CANVAS_HEIGHT = 400;
-	var CANVAS_WIDTH = exports.CANVAS_WIDTH = 400;
+	var CANVAS_HEIGHT = exports.CANVAS_HEIGHT = 500;
+	var CANVAS_WIDTH = exports.CANVAS_WIDTH = 500;
 	
 	//player
 	var BALL_RADIUS = exports.BALL_RADIUS = 7;

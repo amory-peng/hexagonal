@@ -3,6 +3,7 @@ html {
   border: 0;
   padding: 0;
   font-family: sans-serif;
+  background: black;
 }
 
 h1 {
@@ -20,19 +21,21 @@ body {
 #github img {
   height: 50px;
   width: 50px;
+  border-radius: 10000px;
+  margin-bottom: 50px;
 }
 
 #game {
-  height: 400px;
-  width: 400px;
+  height: 500px;
+  width: 500px;
   position: relative;
+  border: 1px solid white;
 }
 
 #canvas {
   height: 100%;
   width: 100%;
   background: black;
-  border: 1px solid black;
   position: absolute;
   z-index: 2;
 }
