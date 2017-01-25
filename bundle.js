@@ -164,7 +164,6 @@
 	        this.game.generateShape();
 	        if (this.difficulty + 30 < _vars.GENERATE_SHAPE_FRAME) {
 	          this.difficulty += 1;
-	          console.log("difficulty inc");
 	        }
 	        this.generateRate += _vars.GENERATE_SHAPE_FRAME - this.difficulty;
 	      }
