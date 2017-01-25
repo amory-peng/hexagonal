@@ -46,13 +46,33 @@
 
 	'use strict';
 	
+	var _view = __webpack_require__(1);
+	
+	var _view2 = _interopRequireDefault(_view);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	document.addEventListener('DOMContentLoaded', function () {
+	  var view = new _view2.default();
+	});
+
+/***/ },
+/* 1 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _game = __webpack_require__(1);
+	var _game = __webpack_require__(2);
 	
 	var _game2 = _interopRequireDefault(_game);
 	
-	var _vars = __webpack_require__(3);
+	var _vars = __webpack_require__(4);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -78,7 +98,7 @@
 	      this.game = new _game2.default(this.ctx);
 	      this.player = this.game.player;
 	      this.generateRate = _vars.GENERATE_SHAPE_FRAME;
-	      this.handleInput();
+	      this.difficulty = 0;
 	      requestAnimationFrame(this.frame.bind(this));
 	    }
 	  }, {
@@ -140,8 +160,13 @@
 	        this.player.handleMove(9);
 	      }
 	      this.timer++;
-	      if (this.timer % this.generateRate === 0) {
+	      if (this.timer === this.generateRate) {
 	        this.game.generateShape();
+	        if (this.difficulty + 30 < _vars.GENERATE_SHAPE_FRAME) {
+	          this.difficulty += 1;
+	          console.log("difficulty inc");
+	        }
+	        this.generateRate += _vars.GENERATE_SHAPE_FRAME - this.difficulty;
 	      }
 	
 	      this.game.tick();
@@ -162,10 +187,10 @@
 	  return View;
 	}();
 	
-	var view = new View();
+	exports.default = View;
 
 /***/ },
-/* 1 */
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -176,7 +201,7 @@
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _player = __webpack_require__(2);
+	var _player = __webpack_require__(3);
 	
 	var _player2 = _interopRequireDefault(_player);
 	
@@ -184,7 +209,7 @@
 	
 	var _shape2 = _interopRequireDefault(_shape);
 	
-	var _vars = __webpack_require__(3);
+	var _vars = __webpack_require__(4);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -263,7 +288,7 @@
 	exports.default = Game;
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -274,7 +299,7 @@
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _vars = __webpack_require__(3);
+	var _vars = __webpack_require__(4);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -331,7 +356,7 @@
 	exports.default = Player;
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -339,6 +364,9 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
+	
+	
+	var difficulty = 2;
 	//canvas
 	var CANVAS_HEIGHT = exports.CANVAS_HEIGHT = 500;
 	var CANVAS_WIDTH = exports.CANVAS_WIDTH = 500;
@@ -348,17 +376,16 @@
 	var CENTER_RADIUS = exports.CENTER_RADIUS = 30;
 	
 	//shape
-	var SHAPE_ANGLE_CHANGE = exports.SHAPE_ANGLE_CHANGE = 3;
+	var SHAPE_ANGLE_CHANGE = exports.SHAPE_ANGLE_CHANGE = 0 + difficulty;
 	var SHAPE_STARTING_RADIUS = exports.SHAPE_STARTING_RADIUS = 300;
-	var SHAPE_SHRINK_RATE = exports.SHAPE_SHRINK_RATE = 3;
+	var SHAPE_SHRINK_RATE = exports.SHAPE_SHRINK_RATE = 0 + difficulty;
 	var STARTING_ANGLES = exports.STARTING_ANGLES = [[0], [0, 180], [0, 120, 240]];
-	var ARC_LENGTHS = exports.ARC_LENGTHS = [180, 80, 40];
+	var ARC_LENGTHS = exports.ARC_LENGTHS = [180, 80, 45];
 	
 	//view
-	var GENERATE_SHAPE_FRAME = exports.GENERATE_SHAPE_FRAME = 40;
+	var GENERATE_SHAPE_FRAME = exports.GENERATE_SHAPE_FRAME = 120 - 20 * difficulty;
 
 /***/ },
-/* 4 */,
 /* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
@@ -370,7 +397,7 @@
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _vars = __webpack_require__(3);
+	var _vars = __webpack_require__(4);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -407,7 +434,7 @@
 	        ctx.beginPath();
 	        ctx.arc(_vars.CANVAS_WIDTH / 2, _vars.CANVAS_HEIGHT / 2, _this2.radius, startAngle * Math.PI / 180, (startAngle + _this2.arcLength) * Math.PI / 180);
 	        ctx.strokeStyle = _this2.color;
-	        ctx.lineWidth = 10;
+	        ctx.lineWidth = 5;
 	        ctx.stroke();
 	      });
 	    }
@@ -434,7 +461,6 @@
 	      var collision = false;
 	      this.startAngles.forEach(function (startAngle) {
 	        if (other.radius - _vars.BALL_RADIUS <= _this3.radius && other.radius + _vars.BALL_RADIUS >= _this3.radius) {
-	          console.log("inside radius");
 	          var end = startAngle + _this3.arcLength;
 	          var start = startAngle;
 	          if (start >= 360 || end >= 360) {
@@ -442,7 +468,6 @@
 	            start -= 360;
 	          }
 	          if (other.angle > start && other.angle < end || other.angle - 360 > start && other.angle - 360 < end || other.angle + 360 > start && other.angle + 360 < end) {
-	            console.log("collision!");
 	            collision = true;
 	          }
 	        }

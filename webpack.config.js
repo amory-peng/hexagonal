@@ -1,5 +1,5 @@
 module.exports = {
-  entry: './lib/view.js',
+  entry: './lib/supercircles.js',
   output: {
     path: './',
     filename: 'bundle.js',
