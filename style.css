@@ -1,15 +1,71 @@
 html {
   height: 100%;
+  border: 0;
+  padding: 0;
+  font-family: sans-serif;
+}
+
+h1 {
+  font-size: 50px;
 }
 
 body {
   height: 100%;
   display: flex;
+  flex-flow: column;
   align-items: center;
   justify-content: center;
 }
 
+#github img {
+  height: 50px;
+  width: 50px;
+}
+
+#game {
+  height: 400px;
+  width: 400px;
+  position: relative;
+}
+
 #canvas {
+  height: 100%;
+  width: 100%;
   background: black;
   border: 1px solid black;
+  position: absolute;
+  z-index: 2;
+}
+
+#pre-game {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  color: white;
+  z-index: 3;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#post-game {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  color: white;
+  background: black;
+  z-index: 3;
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+  justify-content: center;
+  visibility: hidden;
+}
+
+#scores{
+  width: 100%;
+  padding-top: 40px;
+  display: flex;
+  justify-content: space-around;
 }

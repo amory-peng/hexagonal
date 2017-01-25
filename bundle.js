@@ -64,20 +64,20 @@
 	
 	    var canvasEl = document.getElementById("canvas");
 	    this.ctx = canvasEl.getContext("2d");
-	    this.timer = 0;
 	    this.keyLeft = false;
 	    this.keyRight = false;
 	    this.topScore = 0;
 	    this.currentScore = 0;
-	
 	    this.handleInput();
 	  }
 	
 	  _createClass(View, [{
 	    key: 'start',
 	    value: function start() {
+	      this.timer = 0;
 	      this.game = new _game2.default(this.ctx);
 	      this.player = this.game.player;
+	      this.generateRate = _vars.GENERATE_SHAPE_FRAME;
 	      this.handleInput();
 	      requestAnimationFrame(this.frame.bind(this));
 	    }
@@ -105,6 +105,9 @@
 	    key: 'handleSpace',
 	    value: function handleSpace() {
 	      if (this.game === undefined || this.game.gameOver) {
+	        document.getElementById("pre-game").style.visibility = "hidden";
+	        document.getElementById("post-game").style.visibility = "hidden";
+	
 	        this.game = new _game2.default(this.ctx);
 	        this.player = this.game.player;
 	        this.start();
@@ -136,17 +139,21 @@
 	      } else if (this.keyRight) {
 	        this.player.handleMove(9);
 	      }
-	      this.timer += 1;
-	      if (this.timer % _vars.GENERATE_SHAPE_FRAME === 0) {
+	      this.timer++;
+	      if (this.timer % this.generateRate === 0) {
+	        console.log(this.generateRate, this.timer);
 	        this.game.generateShape();
 	      }
+	
 	      this.game.tick();
 	      if (this.game.gameOver) {
+	        document.getElementById("post-game").style.visibility = "visible";
 	        this.currentScore = this.game.count;
 	        if (this.currentScore > this.topScore) {
 	          this.topScore = this.currentScore;
 	        }
-	        console.log(this.currentScore, this.topScore);
+	        document.getElementById("score").innerHTML = this.currentScore;
+	        document.getElementById("top-score").innerHTML = this.topScore;
 	      } else {
 	        requestAnimationFrame(this.frame.bind(this));
 	      }
@@ -249,7 +256,6 @@
 	  }, {
 	    key: 'tick',
 	    value: function tick() {
-	      // this.generateShape();
 	      this.draw();
 	      this.handleCollision();
 	      this.remove();
@@ -367,7 +373,7 @@
 	      ctx.beginPath();
 	      ctx.arc(_vars.CANVAS_WIDTH / 2, _vars.CANVAS_HEIGHT / 2, this.radius, this.startAngle * Math.PI / 180, (this.startAngle + this.arcLength) * Math.PI / 180);
 	      ctx.strokeStyle = this.color;
-	      ctx.lineWidth = 5;
+	      ctx.lineWidth = 10;
 	      ctx.stroke();
 	    }
 	  }, {
@@ -424,7 +430,7 @@
 	var SHAPE_SHRINK_RATE = exports.SHAPE_SHRINK_RATE = 3;
 	
 	//view
-	var GENERATE_SHAPE_FRAME = exports.GENERATE_SHAPE_FRAME = 30;
+	var GENERATE_SHAPE_FRAME = exports.GENERATE_SHAPE_FRAME = 40;
 
 /***/ }
 /******/ ]);
