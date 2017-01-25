@@ -52,7 +52,7 @@
 	
 	var _game2 = _interopRequireDefault(_game);
 	
-	var _vars = __webpack_require__(4);
+	var _vars = __webpack_require__(3);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -141,7 +141,6 @@
 	      }
 	      this.timer++;
 	      if (this.timer % this.generateRate === 0) {
-	        console.log(this.generateRate, this.timer);
 	        this.game.generateShape();
 	      }
 	
@@ -181,11 +180,11 @@
 	
 	var _player2 = _interopRequireDefault(_player);
 	
-	var _shape = __webpack_require__(3);
+	var _shape = __webpack_require__(5);
 	
 	var _shape2 = _interopRequireDefault(_shape);
 	
-	var _vars = __webpack_require__(4);
+	var _vars = __webpack_require__(3);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -214,17 +213,8 @@
 	      var _this = this;
 	
 	      this.shapes.forEach(function (shape) {
-	        if (_this.player.radius - _vars.BALL_RADIUS <= shape.radius && _this.player.radius + _vars.BALL_RADIUS >= shape.radius) {
-	          var end = shape.startAngle + shape.arcLength;
-	          var start = shape.startAngle;
-	          if (start >= 360 || end >= 360) {
-	            end -= 360;
-	            start -= 360;
-	          }
-	          if (_this.player.angle > start && _this.player.angle < end || _this.player.angle - 360 > start && _this.player.angle - 360 < end || _this.player.angle + 360 > start && _this.playerangle + 360 < end) {
-	            console.log("collision!");
-	            _this.gameOver = true;
-	          }
+	        if (shape.handleCollision(_this.player)) {
+	          _this.gameOver = true;
 	        }
 	      });
 	    }
@@ -284,7 +274,7 @@
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _vars = __webpack_require__(4);
+	var _vars = __webpack_require__(3);
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
@@ -342,73 +332,6 @@
 
 /***/ },
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-	  value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _vars = __webpack_require__(4);
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	var Shape = function () {
-	  function Shape() {
-	    _classCallCheck(this, Shape);
-	
-	    this.radius = _vars.SHAPE_STARTING_RADIUS;
-	    this.startAngle = this.handleMove(Math.random() * 360);
-	    this.arcLength = 180;
-	    this.clockwise = Math.random() > 0.5 ? true : false;
-	    this.color = 'white';
-	  }
-	
-	  _createClass(Shape, [{
-	    key: 'draw',
-	    value: function draw(ctx) {
-	      ctx.beginPath();
-	      ctx.arc(_vars.CANVAS_WIDTH / 2, _vars.CANVAS_HEIGHT / 2, this.radius, this.startAngle * Math.PI / 180, (this.startAngle + this.arcLength) * Math.PI / 180);
-	      ctx.strokeStyle = this.color;
-	      ctx.lineWidth = 10;
-	      ctx.stroke();
-	    }
-	  }, {
-	    key: 'shrink',
-	    value: function shrink(num) {
-	      this.radius -= num;
-	    }
-	  }, {
-	    key: 'handleMove',
-	    value: function handleMove(angle) {
-	      if (angle > 360) {
-	        angle -= 360;
-	      } else if (angle < 0) {
-	        angle += 360;
-	      }
-	      return angle;
-	    }
-	  }, {
-	    key: 'rotate',
-	    value: function rotate() {
-	      if (this.clockwise) {
-	        this.startAngle = this.handleMove(this.startAngle + _vars.SHAPE_ANGLE_CHANGE);
-	      } else {
-	        this.startAngle = this.handleMove(this.startAngle - _vars.SHAPE_ANGLE_CHANGE);
-	      }
-	    }
-	  }]);
-	
-	  return Shape;
-	}();
-	
-	exports.default = Shape;
-
-/***/ },
-/* 4 */
 /***/ function(module, exports) {
 
 	"use strict";
@@ -428,9 +351,124 @@
 	var SHAPE_ANGLE_CHANGE = exports.SHAPE_ANGLE_CHANGE = 3;
 	var SHAPE_STARTING_RADIUS = exports.SHAPE_STARTING_RADIUS = 300;
 	var SHAPE_SHRINK_RATE = exports.SHAPE_SHRINK_RATE = 3;
+	var STARTING_ANGLES = exports.STARTING_ANGLES = [[0], [0, 180], [0, 120, 240]];
+	var ARC_LENGTHS = exports.ARC_LENGTHS = [180, 80, 40];
 	
 	//view
 	var GENERATE_SHAPE_FRAME = exports.GENERATE_SHAPE_FRAME = 40;
+
+/***/ },
+/* 4 */,
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	  value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _vars = __webpack_require__(3);
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	var Shape = function () {
+	  function Shape() {
+	    _classCallCheck(this, Shape);
+	
+	    this.radius = _vars.SHAPE_STARTING_RADIUS;
+	    this.clockwise = Math.random() > 0.5 ? true : false;
+	    this.color = 'white';
+	    this.generateStartAngles();
+	  }
+	
+	  _createClass(Shape, [{
+	    key: 'generateStartAngles',
+	    value: function generateStartAngles() {
+	      var _this = this;
+	
+	      var select = Math.floor(Math.random() * _vars.STARTING_ANGLES.length);
+	      this.arcLength = _vars.ARC_LENGTHS[select];
+	      var selectAngles = _vars.STARTING_ANGLES[select];
+	      var delta = Math.random() * 360;
+	      selectAngles = selectAngles.map(function (angle) {
+	        return _this.handleMove(angle + delta);
+	      });
+	      this.startAngles = selectAngles;
+	    }
+	  }, {
+	    key: 'draw',
+	    value: function draw(ctx) {
+	      var _this2 = this;
+	
+	      this.startAngles.forEach(function (startAngle) {
+	        ctx.beginPath();
+	        ctx.arc(_vars.CANVAS_WIDTH / 2, _vars.CANVAS_HEIGHT / 2, _this2.radius, startAngle * Math.PI / 180, (startAngle + _this2.arcLength) * Math.PI / 180);
+	        ctx.strokeStyle = _this2.color;
+	        ctx.lineWidth = 10;
+	        ctx.stroke();
+	      });
+	    }
+	  }, {
+	    key: 'shrink',
+	    value: function shrink(num) {
+	      this.radius -= num;
+	    }
+	  }, {
+	    key: 'handleMove',
+	    value: function handleMove(angle) {
+	      if (angle > 360) {
+	        angle -= 360;
+	      } else if (angle < 0) {
+	        angle += 360;
+	      }
+	      return angle;
+	    }
+	  }, {
+	    key: 'handleCollision',
+	    value: function handleCollision(other) {
+	      var _this3 = this;
+	
+	      var collision = false;
+	      this.startAngles.forEach(function (startAngle) {
+	        if (other.radius - _vars.BALL_RADIUS <= _this3.radius && other.radius + _vars.BALL_RADIUS >= _this3.radius) {
+	          console.log("inside radius");
+	          var end = startAngle + _this3.arcLength;
+	          var start = startAngle;
+	          if (start >= 360 || end >= 360) {
+	            end -= 360;
+	            start -= 360;
+	          }
+	          if (other.angle > start && other.angle < end || other.angle - 360 > start && other.angle - 360 < end || other.angle + 360 > start && other.angle + 360 < end) {
+	            console.log("collision!");
+	            collision = true;
+	          }
+	        }
+	      });
+	      return collision;
+	    }
+	  }, {
+	    key: 'rotate',
+	    value: function rotate() {
+	      var _this4 = this;
+	
+	      this.startAngles = this.startAngles.map(function (startAngle) {
+	        if (_this4.clockwise) {
+	          startAngle = _this4.handleMove(startAngle + _vars.SHAPE_ANGLE_CHANGE);
+	        } else {
+	          startAngle = _this4.handleMove(startAngle - _vars.SHAPE_ANGLE_CHANGE);
+	        }
+	        return startAngle;
+	      });
+	    }
+	  }]);
+	
+	  return Shape;
+	}();
+	
+	exports.default = Shape;
 
 /***/ }
 /******/ ]);
