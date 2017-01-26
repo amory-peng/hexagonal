@@ -97,6 +97,7 @@
 	      this.timer = 0;
 	      this.game = new _game2.default(this.ctx);
 	      this.player = this.game.player;
+	      this.currentScore = 0;
 	      this.generateRate = _vars.GENERATE_SHAPE_FRAME;
 	      this.difficulty = 0;
 	      requestAnimationFrame(this.frame.bind(this));
@@ -155,9 +156,9 @@
 	    key: 'frame',
 	    value: function frame() {
 	      if (this.keyLeft) {
-	        this.player.handleMove(-9);
+	        this.player.handleMove(-_vars.PLAYER_SENSITIVITY);
 	      } else if (this.keyRight) {
-	        this.player.handleMove(9);
+	        this.player.handleMove(_vars.PLAYER_SENSITIVITY);
 	      }
 	      this.timer++;
 	      if (this.timer === this.generateRate) {
@@ -309,6 +310,7 @@
 	    this.angle = 0;
 	    this.radius = 50;
 	    this.clockwise = true;
+	    this.pulse = false;
 	  }
 	
 	  _createClass(Player, [{
@@ -335,6 +337,11 @@
 	      return [x, y];
 	    }
 	  }, {
+	    key: 'pulsate',
+	    value: function pulsate() {
+	      this.pulse = !this.pulse;
+	    }
+	  }, {
 	    key: 'draw',
 	    value: function draw(ctx) {
 	      ctx.beginPath();
@@ -343,7 +350,9 @@
 	      ctx.fill();
 	
 	      ctx.beginPath();
-	      ctx.arc(_vars.CANVAS_WIDTH / 2, _vars.CANVAS_HEIGHT / 2, _vars.CENTER_RADIUS, 0, 2 * Math.PI);
+	      var centerRadius = _vars.CENTER_RADIUS;
+	
+	      ctx.arc(_vars.CANVAS_WIDTH / 2, _vars.CANVAS_HEIGHT / 2, centerRadius, 0, 2 * Math.PI);
 	      ctx.fillStyle = 'white';
 	      ctx.fill();
 	    }
@@ -373,6 +382,7 @@
 	//player
 	var BALL_RADIUS = exports.BALL_RADIUS = 7;
 	var CENTER_RADIUS = exports.CENTER_RADIUS = 30;
+	var PLAYER_SENSITIVITY = exports.PLAYER_SENSITIVITY = 5;
 	
 	//shape
 	var SHAPE_ANGLE_CHANGE = exports.SHAPE_ANGLE_CHANGE = 0 + difficulty;
@@ -433,7 +443,7 @@
 	        ctx.beginPath();
 	        ctx.arc(_vars.CANVAS_WIDTH / 2, _vars.CANVAS_HEIGHT / 2, _this2.radius, startAngle * Math.PI / 180, (startAngle + _this2.arcLength) * Math.PI / 180);
 	        ctx.strokeStyle = _this2.color;
-	        ctx.lineWidth = 5;
+	        ctx.lineWidth = 7;
 	        ctx.stroke();
 	      });
 	    }
