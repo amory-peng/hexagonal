@@ -12,6 +12,10 @@ Game Functionality:
 
 Super circles is built with Javascript using the HTML5 canvas.
 
+![start](./docs/images/start.png)
+
+![start](./docs/images/gameplay.png)
+
 ### Design
 Each `game` instance handles a `player` and generates `shapes` at gradually shortening intervals. Each frame shrinks the `shapes` in the game, checks for collision, and calls `requestAnimationFrame` to simulate animation.
 
