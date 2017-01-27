@@ -164,11 +164,10 @@
 	      if (this.timer === this.generateRate) {
 	        this.game.generateShape();
 	        if (this.difficulty + 30 < _vars.GENERATE_SHAPE_FRAME) {
-	          this.difficulty += 1;
+	          this.difficulty++;
 	        }
 	        this.generateRate += _vars.GENERATE_SHAPE_FRAME - this.difficulty;
 	      }
-	
 	      this.game.tick();
 	      this.ctx.font = '20px Arial';
 	      this.ctx.fillText(this.game.count, 470, 20);
@@ -471,6 +470,7 @@
 	
 	      var collision = false;
 	      this.startAngles.forEach(function (startAngle) {
+	        //check if shape radius within player radius
 	        if (other.radius - _vars.BALL_RADIUS <= _this3.radius && other.radius + _vars.BALL_RADIUS >= _this3.radius) {
 	          var end = startAngle + _this3.arcLength;
 	          var start = startAngle;
@@ -478,6 +478,7 @@
 	            end -= 360;
 	            start -= 360;
 	          }
+	          //check for angle overlap, account for angle rotation
 	          if (other.angle > start && other.angle < end || other.angle - 360 > start && other.angle - 360 < end || other.angle + 360 > start && other.angle + 360 < end) {
 	            collision = true;
 	          }
