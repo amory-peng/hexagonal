@@ -170,6 +170,8 @@
 	      }
 	
 	      this.game.tick();
+	      this.ctx.font = '20px Arial';
+	      this.ctx.fillText(this.game.count, 470, 20);
 	      if (this.game.gameOver) {
 	        document.getElementById("post-game").style.visibility = "visible";
 	        this.currentScore = this.game.count;
