@@ -1,4 +1,4 @@
-## Hexagonal
+## Super Circles
 
 ### Background
 
